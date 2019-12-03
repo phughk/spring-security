@@ -46,6 +46,7 @@ final class OAuth2AuthorizationGrantRequestEntityUtils {
 		if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
 			headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
 		}
+		// TODO gh-6881?
 		return headers;
 	}
 

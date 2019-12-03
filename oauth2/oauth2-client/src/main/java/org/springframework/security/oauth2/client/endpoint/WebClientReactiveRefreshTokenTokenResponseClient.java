@@ -87,6 +87,7 @@ public final class WebClientReactiveRefreshTokenTokenResponseClient implements R
 		return headers -> {
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+			// TODO gh-6881
 			if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
 				headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
 			}
@@ -103,6 +104,7 @@ public final class WebClientReactiveRefreshTokenTokenResponseClient implements R
 			body.with(OAuth2ParameterNames.SCOPE,
 					StringUtils.collectionToDelimitedString(refreshTokenGrantRequest.getScopes(), " "));
 		}
+		// TODO gh-6881
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			body.with(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
 			body.with(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());

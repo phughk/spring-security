@@ -81,6 +81,7 @@ public class OAuth2ClientCredentialsGrantRequestEntityConverter implements Conve
 			formParameters.add(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
 			formParameters.add(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());
 		}
+		// TODO gh-6881
 
 		return formParameters;
 	}

@@ -52,6 +52,7 @@ import java.util.Arrays;
 public final class DefaultAuthorizationCodeTokenResponseClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
 	private static final String INVALID_TOKEN_RESPONSE_ERROR_CODE = "invalid_token_response";
 
+	// TODO This is where authentication credentials are set
 	private Converter<OAuth2AuthorizationCodeGrantRequest, RequestEntity<?>> requestEntityConverter =
 			new OAuth2AuthorizationCodeGrantRequestEntityConverter();
 

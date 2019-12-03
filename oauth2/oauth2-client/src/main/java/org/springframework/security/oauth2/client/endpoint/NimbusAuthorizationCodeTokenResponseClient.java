@@ -16,6 +16,7 @@
 package org.springframework.security.oauth2.client.endpoint;
 
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.oauth2.sdk.AccessTokenResponse;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
@@ -24,10 +25,7 @@ import com.nimbusds.oauth2.sdk.ErrorObject;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.TokenErrorResponse;
 import com.nimbusds.oauth2.sdk.TokenRequest;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
-import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import org.springframework.http.MediaType;
@@ -56,14 +54,14 @@ import java.util.Set;
  * <b>NOTE:</b> This implementation uses the Nimbus OAuth 2.0 SDK internally.
  *
  * @author Joe Grandja
- * @since 5.0
- * @deprecated Use {@link DefaultAuthorizationCodeTokenResponseClient}
  * @see OAuth2AccessTokenResponseClient
  * @see OAuth2AuthorizationCodeGrantRequest
  * @see OAuth2AccessTokenResponse
  * @see <a target="_blank" href="https://connect2id.com/products/nimbus-oauth-openid-connect-sdk">Nimbus OAuth 2.0 SDK</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc6749#section-4.1.3">Section 4.1.3 Access Token Request (Authorization Code Grant)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc6749#section-4.1.4">Section 4.1.4 Access Token Response (Authorization Code Grant)</a>
+ * @since 5.0
+ * @deprecated Use {@link DefaultAuthorizationCodeTokenResponseClient}
  */
 @Deprecated
 public class NimbusAuthorizationCodeTokenResponseClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
@@ -75,7 +73,7 @@ public class NimbusAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 
 		// Build the authorization code grant request for the token endpoint
 		AuthorizationCode authorizationCode = new AuthorizationCode(
-			authorizationGrantRequest.getAuthorizationExchange().getAuthorizationResponse().getCode());
+				authorizationGrantRequest.getAuthorizationExchange().getAuthorizationResponse().getCode());
 		URI redirectUri = toURI(authorizationGrantRequest.getAuthorizationExchange().getAuthorizationRequest().getRedirectUri());
 		AuthorizationGrant authorizationCodeGrant = new AuthorizationCodeGrant(authorizationCode, redirectUri);
 		URI tokenUri = toURI(clientRegistration.getProviderDetails().getTokenUri());
@@ -86,8 +84,19 @@ public class NimbusAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 		ClientAuthentication clientAuthentication;
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			clientAuthentication = new ClientSecretPost(clientId, clientSecret);
-		} else {
+		} else if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
 			clientAuthentication = new ClientSecretBasic(clientId, clientSecret);
+		} else if (ClientAuthenticationMethod.SECRET.equals(clientRegistration.getClientAuthenticationMethod())) {
+			if (true) throw new RuntimeException("Unimplemented");
+			try {
+				clientAuthentication = new ClientSecretJWT(null, null, null, null);
+			} catch (JOSEException e) {
+				throw new RuntimeException(e);
+			}
+		} else if (ClientAuthenticationMethod.KEY.equals(clientRegistration.getClientAuthenticationMethod())) {
+			throw new RuntimeException("Unimplemented");
+		} else {
+			throw new RuntimeException("Unhandled");
 		}
 
 		com.nimbusds.oauth2.sdk.TokenResponse tokenResponse;
@@ -136,10 +145,10 @@ public class NimbusAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 		Set<String> scopes;
 		if (CollectionUtils.isEmpty(accessTokenResponse.getTokens().getAccessToken().getScope())) {
 			scopes = new LinkedHashSet<>(
-				authorizationGrantRequest.getAuthorizationExchange().getAuthorizationRequest().getScopes());
+					authorizationGrantRequest.getAuthorizationExchange().getAuthorizationRequest().getScopes());
 		} else {
 			scopes = new LinkedHashSet<>(
-				accessTokenResponse.getTokens().getAccessToken().getScope().toStringList());
+					accessTokenResponse.getTokens().getAccessToken().getScope().toStringList());
 		}
 
 		String refreshToken = null;
@@ -150,12 +159,12 @@ public class NimbusAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 		Map<String, Object> additionalParameters = new LinkedHashMap<>(accessTokenResponse.getCustomParameters());
 
 		return OAuth2AccessTokenResponse.withToken(accessToken)
-			.tokenType(accessTokenType)
-			.expiresIn(expiresIn)
-			.scopes(scopes)
-			.refreshToken(refreshToken)
-			.additionalParameters(additionalParameters)
-			.build();
+				.tokenType(accessTokenType)
+				.expiresIn(expiresIn)
+				.scopes(scopes)
+				.refreshToken(refreshToken)
+				.additionalParameters(additionalParameters)
+				.build();
 	}
 
 	private static URI toURI(String uriStr) {

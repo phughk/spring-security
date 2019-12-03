@@ -100,6 +100,7 @@ public final class WebClientReactivePasswordTokenResponseClient implements React
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
+				// TODO gh-6881
 				headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
 			}
 		};
@@ -115,6 +116,7 @@ public final class WebClientReactivePasswordTokenResponseClient implements React
 			body.with(OAuth2ParameterNames.SCOPE,
 					StringUtils.collectionToDelimitedString(passwordGrantRequest.getClientRegistration().getScopes(), " "));
 		}
+		// TODO gh-6881
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			body.with(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
 			body.with(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());

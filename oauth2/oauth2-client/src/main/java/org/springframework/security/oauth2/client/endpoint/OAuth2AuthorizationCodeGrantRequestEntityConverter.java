@@ -86,6 +86,12 @@ public class OAuth2AuthorizationCodeGrantRequestEntityConverter implements Conve
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			formParameters.add(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());
 		}
+		if (ClientAuthenticationMethod.KEY.equals(clientRegistration.getClientAuthenticationMethod())) {
+			throw new RuntimeException("Unimplemented");
+		}
+		if (ClientAuthenticationMethod.SECRET.equals(clientRegistration.getClientAuthenticationMethod())) {
+			throw new RuntimeException("Unimplemented");
+		}
 		if (codeVerifier != null) {
 			formParameters.add(PkceParameterNames.CODE_VERIFIER, codeVerifier);
 		}

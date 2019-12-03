@@ -83,6 +83,7 @@ public class OAuth2PasswordGrantRequestEntityConverter implements Converter<OAut
 			formParameters.add(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
 			formParameters.add(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());
 		}
+		// TODO gh-6881
 
 		return formParameters;
 	}

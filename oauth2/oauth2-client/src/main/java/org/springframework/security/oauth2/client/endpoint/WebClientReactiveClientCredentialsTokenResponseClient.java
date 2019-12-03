@@ -97,6 +97,7 @@ public class WebClientReactiveClientCredentialsTokenResponseClient implements Re
 	private Consumer<HttpHeaders> headers(ClientRegistration clientRegistration) {
 		return headers -> {
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			// TODO gh-6881 tied line 116
 			if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
 				headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
 			}
@@ -112,6 +113,7 @@ public class WebClientReactiveClientCredentialsTokenResponseClient implements Re
 			String scope = StringUtils.collectionToDelimitedString(scopes, " ");
 			body.with(OAuth2ParameterNames.SCOPE, scope);
 		}
+		// TODO gh-6881
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			body.with(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
 			body.with(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());

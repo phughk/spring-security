@@ -35,6 +35,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc6749#section-4.1.4">Section 4.1.4 Access Token Response (Authorization Code Grant)</a>
  */
 public interface OAuth2AccessTokenResponseClient<T extends AbstractOAuth2AuthorizationGrantRequest>  {
+	// TODO look how this interacts because it defines the interface for auth_grant<->access_token exchange
 
 	/**
 	 * Exchanges the authorization grant credential, provided in the authorization grant request,

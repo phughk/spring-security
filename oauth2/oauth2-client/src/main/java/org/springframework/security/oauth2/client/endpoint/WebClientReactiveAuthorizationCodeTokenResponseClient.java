@@ -73,6 +73,7 @@ public class WebClientReactiveAuthorizationCodeTokenResponseClient implements Re
 					.uri(tokenUri)
 					.accept(MediaType.APPLICATION_JSON)
 					.headers(headers -> {
+						// TODO gh-6881
 						if (ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
 							headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
 						}
@@ -107,6 +108,7 @@ public class WebClientReactiveAuthorizationCodeTokenResponseClient implements Re
 		if (ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
 			body.with(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());
 		}
+		// TODO gh-6881
 		if (codeVerifier != null) {
 			body.with(PkceParameterNames.CODE_VERIFIER, codeVerifier);
 		}
